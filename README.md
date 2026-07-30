@@ -31,7 +31,6 @@ This project implements a Modular Battery Management System (BMS) using ESP32 on
 - diagram.json
 
 ## Wokwi Project
-Paste your Wokwi project link here.
-
+[Click here to open the WOKWI simulation](https://wokwi.com/projects/470806565033274369)
 ## Author
 Unike Vanguri
