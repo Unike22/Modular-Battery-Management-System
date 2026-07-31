@@ -1,21 +1,16 @@
 #include "BMSEngine.h"
 
+
 BMSEngine bms;
 
-void setup() {
-  Serial.begin(115200);
 
-  analogReadResolution(12);
+const unsigned long UPDATE_INTERVAL_MS = 2000;
 
-  Serial.println("Modular Battery Management System");
-  Serial.println("--------------------------------");
-}
 
-void loop() {
-  bms.update();
+unsigned long previousUpdateTime = 0;
 
-  BatteryInfo battery = bms.getBatteryInfo();
 
+void displayBatteryInfo(const BatteryInfo& battery) {
   Serial.println();
 
   for (int i = 0; i < CELL_COUNT; i++) {
@@ -68,6 +63,37 @@ void loop() {
   }
 
   Serial.println("--------------------------------");
+}
 
-  delay(2000);
+void setup() {
+  Serial.begin(115200);
+
+  
+  analogReadResolution(12);
+
+  Serial.println("Modular Battery Management System");
+  Serial.println("--------------------------------");
+
+  
+  previousUpdateTime = millis() - UPDATE_INTERVAL_MS;
+}
+
+void loop() {
+  unsigned long currentTime = millis();
+
+  
+  if (currentTime - previousUpdateTime >= UPDATE_INTERVAL_MS) {
+    previousUpdateTime = currentTime;
+
+    
+    bms.update();
+
+   
+    BatteryInfo battery = bms.getBatteryInfo();
+
+    
+    displayBatteryInfo(battery);
+  }
+
+
 }
