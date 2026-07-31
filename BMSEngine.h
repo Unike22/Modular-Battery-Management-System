@@ -11,7 +11,11 @@ class BMSEngine {
     float readCellVoltage(int pin);
     float calculateSoC(float averageVoltage);
     float calculateAdaptiveThreshold(float stateOfCharge);
-    String detectTrend(float currentImbalance, float previousImbalance);
+
+    String detectTrend(
+      float currentImbalance,
+      float previousImbalance
+    );
 
   public:
     BMSEngine();
