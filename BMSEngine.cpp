@@ -1,8 +1,10 @@
 #include "BMSEngine.h"
 
-BMSEngine::BMSEngine() {
+
+BMSEngine::BMSEngine() : info{} {
   info.previousImbalance = 0.0;
 }
+
 
 float BMSEngine::readCellVoltage(int pin) {
   int adcValue = analogRead(pin);
@@ -12,12 +14,14 @@ float BMSEngine::readCellVoltage(int pin) {
          (MAX_CELL_VOLTAGE - MIN_CELL_VOLTAGE);
 }
 
+
 float BMSEngine::calculateSoC(float averageVoltage) {
   float soc =
       ((averageVoltage - MIN_CELL_VOLTAGE) /
        (MAX_CELL_VOLTAGE - MIN_CELL_VOLTAGE)) *
       100.0;
 
+  
   if (soc > 100.0) {
     soc = 100.0;
   }
@@ -29,6 +33,7 @@ float BMSEngine::calculateSoC(float averageVoltage) {
   return soc;
 }
 
+
 float BMSEngine::calculateAdaptiveThreshold(float stateOfCharge) {
   if (stateOfCharge >= 80.0) {
     return 0.05;
@@ -38,6 +43,7 @@ float BMSEngine::calculateAdaptiveThreshold(float stateOfCharge) {
     return 0.15;
   }
 }
+
 
 String BMSEngine::detectTrend(
     float currentImbalance,
@@ -54,19 +60,24 @@ String BMSEngine::detectTrend(
   }
 }
 
+
 void BMSEngine::update() {
   float totalVoltage = 0.0;
 
+  
   for (int i = 0; i < CELL_COUNT; i++) {
     info.cellVoltages[i] = readCellVoltage(CELL_PINS[i]);
     totalVoltage += info.cellVoltages[i];
   }
 
+  
   info.maxVoltage = info.cellVoltages[0];
   info.minVoltage = info.cellVoltages[0];
+
   info.strongestCell = 0;
   info.weakestCell = 0;
 
+  
   for (int i = 1; i < CELL_COUNT; i++) {
     if (info.cellVoltages[i] > info.maxVoltage) {
       info.maxVoltage = info.cellVoltages[i];
@@ -79,26 +90,34 @@ void BMSEngine::update() {
     }
   }
 
+  
   info.imbalance = info.maxVoltage - info.minVoltage;
 
+  
   info.trend = detectTrend(
-      info.imbalance,
-      info.previousImbalance
+    info.imbalance,
+    info.previousImbalance
   );
 
+  
   info.averageVoltage = totalVoltage / CELL_COUNT;
 
+  
   info.stateOfCharge =
       calculateSoC(info.averageVoltage);
 
+  
   info.adaptiveThreshold =
       calculateAdaptiveThreshold(info.stateOfCharge);
 
+  
   info.imbalanceWarning =
       info.imbalance > info.adaptiveThreshold;
 
+  
   info.previousImbalance = info.imbalance;
 }
+
 
 BatteryInfo BMSEngine::getBatteryInfo() {
   return info;
