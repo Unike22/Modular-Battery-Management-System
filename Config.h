@@ -1,7 +1,9 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
+
 const int CELL_COUNT = 4;
+
 
 const int CELL_PINS[CELL_COUNT] = {
   34, 35, 32, 33
