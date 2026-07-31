@@ -1,7 +1,9 @@
 #ifndef BATTERYINFO_H
 #define BATTERYINFO_H
 
+#include <Arduino.h>
 #include "Config.h"
+
 
 struct BatteryInfo {
   float cellVoltages[CELL_COUNT];
